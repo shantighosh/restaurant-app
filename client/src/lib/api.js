@@ -1,16 +1,33 @@
+/*import axios from 'axios';
+
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+export default api;*/
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  // Hardcode your exact port here to instantly bypass env variable issues:
+  baseURL: 'http://localhost:50001/api', 
 });
 
-// Auto-inject JWT session tokens into outgoing headers
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
-}, (error) => Promise.reject(error));
+});
 
 export default api;

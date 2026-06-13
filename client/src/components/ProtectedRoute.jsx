@@ -1,17 +1,22 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { user } = useAuth();
-  const location = useLocation();
+export function ProtectedRoute({ children, allowedRoles }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div style={{ textAlign: 'center', marginTop: '40px' }}>Syncing Floor Credentials...</div>;
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // Smart routing split if a user tries to cross onto the wrong page
+    return user.role === 'staff' || user.role === 'admin' 
+      ? <Navigate to="/staff/dashboard" replace />
+      : <Navigate to="/tables" replace />;
   }
 
   return children;
-};
+}
