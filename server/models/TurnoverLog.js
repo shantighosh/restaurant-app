@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const turnoverLogSchema = new mongoose.Schema({
-  tableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Table', required: true },
+const turnOverSchema = new mongoose.Schema({
+  table: { type: mongoose.Schema.Types.ObjectId, ref: 'Table', required: true },
+  reservation: { type: mongoose.Schema.Types.ObjectId, ref: 'Reservation' },
   partySize: { type: Number, required: true },
-  dayOfWeek: { type: Number, required: true }, // 0=Sunday
-  hourOfDay: { type: Number, required: true }, // 0-23
-  durationMinutes: { type: Number, required: true },
-  date: { type: Date, default: Date.now },
+  seatedAt: { type: Date, required: true },
+  clearedAt: { type: Date, required: true },
+  durationMinutes: { type: Number, required: true } // Calculated automatically: (clearedAt - seatedAt)
 }, { timestamps: true });
 
-module.exports = mongoose.model('TurnoverLog', turnoverLogSchema);
+export default mongoose.model('TurnOver', turnOverSchema);
